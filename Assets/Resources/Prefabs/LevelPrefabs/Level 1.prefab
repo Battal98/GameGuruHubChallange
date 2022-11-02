@@ -8139,6 +8139,7 @@ GameObject:
   - component: {fileID: 8927740389767294579}
   - component: {fileID: 7430000690059605438}
   - component: {fileID: 83515547456883040}
+  - component: {fileID: 3770176110572331654}
   m_Layer: 0
   m_Name: Chibi_Pos
   m_TagString: Untagged
@@ -8191,8 +8192,22 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
+--- !u!114 &3770176110572331654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8927740389767294576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85e1014e60e36a34ebbf35efc15eca23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerRigidbody: {fileID: 83515547456883040}
+  playerAnimator: {fileID: 7730254061945947498}
 --- !u!1 &8927740389770948301
 GameObject:
   m_ObjectHideFlags: 0
@@ -12339,6 +12354,12 @@ PrefabInstance:
 --- !u!4 &4442605080368307984 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5646447060418037118, guid: 8ebf841af362818409cf000d8f1a2345,
+    type: 3}
+  m_PrefabInstance: {fileID: 8357405918164867694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &7730254061945947498 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 1782327572533206788, guid: 8ebf841af362818409cf000d8f1a2345,
     type: 3}
   m_PrefabInstance: {fileID: 8357405918164867694}
   m_PrefabAsset: {fileID: 0}

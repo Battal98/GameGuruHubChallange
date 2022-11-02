@@ -109,7 +109,8 @@ namespace UIModules.Managers
 
         private void OnReset()
         {
-            InitPanels();
+            _uiPanelController.CloseAllPanel();
+            _uiPanelController.OpenPanel(PanelTypes.LevelPanel);
         }
 
         private void OnPlay()
@@ -138,6 +139,7 @@ namespace UIModules.Managers
 
         public void PlayButton()
         {
+            Debug.Log("click");
             CoreGameSignals.Instance.onPlay?.Invoke();
         }
 
