@@ -89,7 +89,7 @@ namespace LevelModule
             LevelSignals.Instance.onClearActiveLevel += OnClearActiveLevel;
             LevelSignals.Instance.onNextLevel += OnNextLevel;
             LevelSignals.Instance.onRestartLevel += OnRestartLevel;
-            //LevelSignals.Instance.onGetLevel += GetLevelCount;
+            LevelSignals.Instance.onGetLevel += GetLevelCount;
         }
 
         private void UnsubscribeEvents()
@@ -99,7 +99,7 @@ namespace LevelModule
             LevelSignals.Instance.onClearActiveLevel -= OnClearActiveLevel;
             LevelSignals.Instance.onNextLevel -= OnNextLevel;
             LevelSignals.Instance.onRestartLevel -= OnRestartLevel;
-            //LevelSignals.Instance.onGetLevel-= GetLevelCount;
+            LevelSignals.Instance.onGetLevel-= GetLevelCount;
         }
 
         private void OnDisable()

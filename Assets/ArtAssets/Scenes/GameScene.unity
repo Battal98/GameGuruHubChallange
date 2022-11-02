@@ -188,7 +188,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &619977319
 GameObject:
@@ -649,7 +649,7 @@ PrefabInstance:
     - target: {fileID: 2082955577545813852, guid: 73c652f167842ac49941b4d9877afc1a,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2082955577545813852, guid: 73c652f167842ac49941b4d9877afc1a,
         type: 3}
@@ -810,6 +810,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3648810986323402050, guid: d1e951e67fc49cc43a552ce4dd6a92ea,
+        type: 3}
+      propertyPath: m_ChildCameras.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3648810986323402051, guid: d1e951e67fc49cc43a552ce4dd6a92ea,
         type: 3}
       propertyPath: target
@@ -887,7 +892,7 @@ PrefabInstance:
     - target: {fileID: 8927740389874868306, guid: 81de6e3f69bf15a4c806fa3bb10d852b,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8927740389874868306, guid: 81de6e3f69bf15a4c806fa3bb10d852b,
         type: 3}

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: CD_Level
   m_EditorClassIdentifier: 
   LevelData:
-  - Value: 0
+  - StackCount: 6
   LevelID: 0

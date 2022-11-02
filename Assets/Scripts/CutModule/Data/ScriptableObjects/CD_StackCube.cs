@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace CutModule.Data.ScriptableObjects
@@ -6,5 +7,6 @@ namespace CutModule.Data.ScriptableObjects
     public class CD_StackCube : ScriptableObject
     {
         public StackCubeData StackCubeData;
+        public List<int> StackCountsEachLevel;
     } 
 }
