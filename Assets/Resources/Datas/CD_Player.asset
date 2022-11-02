@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: CD_Player
   m_EditorClassIdentifier: 
   PlayerData:
-    ForwardSpeed: 25
+    ForwardSpeed: 50

@@ -139,7 +139,6 @@ namespace UIModules.Managers
 
         public void PlayButton()
         {
-            Debug.Log("click");
             CoreGameSignals.Instance.onPlay?.Invoke();
         }
 

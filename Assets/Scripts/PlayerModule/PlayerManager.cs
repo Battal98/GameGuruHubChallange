@@ -23,19 +23,13 @@ public class PlayerManager : MonoBehaviour
     private PlayerAnimationType _playerAnimationType;
     private PlayerData _playerData;
     private Vector3 _initialPosition;
+    private Vector3 _spawnPosition;
     private PlayerMovementCommand _playerMovementCommand;
     private ChangePlayerAnimationCommand _playerAnimationCommand;
 
     #endregion
 
     #endregion
-
-    private void Awake()
-    {
-        _playerData = GetPlayerData();
-        InitCommands();
-        CheckPlayerPosition(this.transform.position);
-    }
 
     #region Event Subscriptions
 
@@ -47,11 +41,13 @@ public class PlayerManager : MonoBehaviour
     private void SubscribeEvents()
     {
         CoreGameSignals.Instance.onPlay += OnPlay;
+        CoreGameSignals.Instance.onSetPlayerSpawnPosition += OnSetPlayerSpawnPosition;
         LevelSignals.Instance.onRestartLevel += OnRestart;
     }
     private void UnsbscribeEvents()
     {
         CoreGameSignals.Instance.onPlay -= OnPlay;
+        CoreGameSignals.Instance.onSetPlayerSpawnPosition -= OnSetPlayerSpawnPosition;
         LevelSignals.Instance.onRestartLevel -= OnRestart;
     }
 
@@ -61,14 +57,24 @@ public class PlayerManager : MonoBehaviour
     }
     #endregion
 
+    private void Awake()
+    {
+        _playerData = GetPlayerData();
+        InitJobs();
+    }
     private PlayerData GetPlayerData()
     {
         return Resources.Load<CD_Player>("Datas/CD_Player").PlayerData;
     }
-    private void InitCommands()
+    private void InitJobs()
     {
         _playerMovementCommand = new PlayerMovementCommand(playerRigidbody, _playerData.ForwardSpeed);
         _playerAnimationCommand = new ChangePlayerAnimationCommand(playerAnimator, _playerAnimationType);
+
+        this.transform.position = _spawnPosition;
+
+        CheckPlayerPosition(this.transform.position);
+        CoreGameSignals.Instance.onSetCameraTarget?.Invoke(this.transform);
     }
     private void CheckPlayerPosition(Vector3 position)
     {
@@ -91,6 +97,11 @@ public class PlayerManager : MonoBehaviour
     {
         _playerMovementCommand.StopPlayerMovement();
         _playerAnimationCommand.ChangePlayerAnimation(PlayerAnimationType.Idle);
+    }
+
+    private void OnSetPlayerSpawnPosition(Vector3 spawnPositionTarget)
+    {
+        _spawnPosition = spawnPositionTarget;
     }
 
     private void FixedUpdate()

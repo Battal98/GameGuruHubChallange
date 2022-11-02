@@ -85,10 +85,7 @@ namespace CameraModule
         {
             target = _target;
             SetCameraState(CameraStatesType.GameCamera);
-            if (target is null)
-                return;
             stateDrivenCamera.Follow = target;
-            stateDrivenCamera.Follow = target.transform;
         }
 
         private void SetCameraState(CameraStatesType _cameraState)
