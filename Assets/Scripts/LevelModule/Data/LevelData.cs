@@ -7,12 +7,12 @@ namespace LevelModule.Data
     [Serializable]
     public class LevelData: ISavable
     {
-        public int Value;
+        public int StackCount;
 
         private const SaveLoadType Key = SaveLoadType.LevelData;
-        public LevelData(int value)
+        public LevelData(int stackCount)
         {
-            Value = value;  
+            StackCount = stackCount;  
         }
         public LevelData()
         {

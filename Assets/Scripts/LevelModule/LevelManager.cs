@@ -56,14 +56,14 @@ namespace LevelModule
         {
             _levelID = GetLevelCount();
             levelData = GetLevelData();
-            _value = levelData.Value;
+            _value = levelData.StackCount;
             if (!ES3.FileExists(this.levelData.GetKey().ToString() + $"{_uniqeID}.es3")) // _levelId aslýnda uniqeid
             {
                 if (!ES3.KeyExists(this.levelData.GetKey().ToString()))
                 {
                     _levelID = GetLevelCount();
                     levelData = GetLevelData();
-                    _value = levelData.Value;
+                    _value = levelData.StackCount;
                     Save(_uniqeID);
                 }
             }
@@ -147,7 +147,7 @@ namespace LevelModule
         {
             LevelData _data = SaveLoadSignals.Instance.onLoadLevelData?.Invoke(SaveLoadType.LevelData, uniqeID);
             levelData = _data;
-            _value = levelData.Value;
+            _value = levelData.StackCount;
         }
 
         public void Save(int uniqeID)

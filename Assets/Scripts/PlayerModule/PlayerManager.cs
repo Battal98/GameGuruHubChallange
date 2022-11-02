@@ -37,7 +37,6 @@ public class PlayerManager : MonoBehaviour
     {
         SubscribeEvents();
     }
-
     private void SubscribeEvents()
     {
         CoreGameSignals.Instance.onPlay += OnPlay;
@@ -52,7 +51,6 @@ public class PlayerManager : MonoBehaviour
         LevelSignals.Instance.onRestartLevel -= OnRestart;
         LevelSignals.Instance.onLevelSuccessful -= OnLevelSuccesful;
     }
-
     private void OnDisable()
     {
         UnsbscribeEvents();
@@ -82,7 +80,6 @@ public class PlayerManager : MonoBehaviour
     {
         _initialPosition = position;
     }
-
     [Button("Start Movement")]
     private void OnPlay()
     {
@@ -92,11 +89,7 @@ public class PlayerManager : MonoBehaviour
     private void OnRestart()
     {
         this.transform.position = _initialPosition;
-    }
-
-    private void OnLevelFailed()
-    {
-
+        this.transform.eulerAngles = Vector3.zero;
     }
     private void OnLevelSuccesful()
     {
@@ -113,7 +106,6 @@ public class PlayerManager : MonoBehaviour
         }
         _playerAnimationCommand.ChangePlayerAnimation(PlayerAnimationType.Idle);
     }
-
     private void OnSetPlayerSpawnPosition(Vector3 spawnPositionTarget)
     {
         _spawnPosition = spawnPositionTarget;

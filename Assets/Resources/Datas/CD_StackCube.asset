@@ -9,13 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 011bb2e7b13ddcf4fb9915d5b49b7d9c, type: 3}
-  m_Name: CD_Pool
+  m_Script: {fileID: 11500000, guid: 146dc526ee603bc4592d2a9eb6aeab7a, type: 3}
+  m_Name: CD_StackCube
   m_EditorClassIdentifier: 
-  PoolDataDic:
-    m_Keys: 00000000
-    m_Values:
-    - ObjectType: {fileID: 2654792769663275691, guid: d3e3d57457d48984a90b29aa179cc167,
-        type: 3}
-      initalAmount: 50
-      isDynamic: 1
+  StackCubeData:
+    MinMaxPushValueX: {x: 3, y: -3}
+    StackCubeSpeed: 3
+    SpawnDotsX: {x: 3, y: -3}
