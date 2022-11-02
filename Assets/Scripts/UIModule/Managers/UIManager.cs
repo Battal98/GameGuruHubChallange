@@ -7,6 +7,7 @@ using TMPro;
 using CoreGameModule.Signals;
 using UIModules.Signals;
 using LevelModule.Signals;
+using DG.Tweening;
 
 namespace UIModules.Managers
 {
@@ -122,7 +123,7 @@ namespace UIModules.Managers
         private void OnLevelFailed()
         {
             _uiPanelController.CloseAllPanel();
-            _uiPanelController.OpenPanel(PanelTypes.FailedPanel);
+            DOVirtual.DelayedCall(1f, () => _uiPanelController.OpenPanel(PanelTypes.FailedPanel));
         }
 
         private void OnLevelSuccessful()

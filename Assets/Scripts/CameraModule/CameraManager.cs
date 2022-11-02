@@ -84,7 +84,6 @@ namespace CameraModule
         private void OnSetCameraTarget(Transform _target)
         {
             target = _target;
-            SetCameraState(CameraStatesType.GameCamera);
             stateDrivenCamera.Follow = target;
         }
 
@@ -103,7 +102,7 @@ namespace CameraModule
         public void OnLevelFailed()
         {
             SetCameraState(CameraStatesType.FailedCamera);
-            stateDrivenCamera.Follow = target.transform;
+            DOVirtual.DelayedCall(1f,()=> stateDrivenCamera.Follow = null);
         }
 
         private void OnPlay()

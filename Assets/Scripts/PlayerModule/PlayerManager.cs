@@ -43,12 +43,14 @@ public class PlayerManager : MonoBehaviour
         CoreGameSignals.Instance.onPlay += OnPlay;
         CoreGameSignals.Instance.onSetPlayerSpawnPosition += OnSetPlayerSpawnPosition;
         LevelSignals.Instance.onRestartLevel += OnRestart;
+        LevelSignals.Instance.onLevelSuccessful += OnLevelSuccesful;
     }
     private void UnsbscribeEvents()
     {
         CoreGameSignals.Instance.onPlay -= OnPlay;
         CoreGameSignals.Instance.onSetPlayerSpawnPosition -= OnSetPlayerSpawnPosition;
         LevelSignals.Instance.onRestartLevel -= OnRestart;
+        LevelSignals.Instance.onLevelSuccessful -= OnLevelSuccesful;
     }
 
     private void OnDisable()
@@ -92,10 +94,23 @@ public class PlayerManager : MonoBehaviour
         this.transform.position = _initialPosition;
     }
 
+    private void OnLevelFailed()
+    {
+
+    }
+    private void OnLevelSuccesful()
+    {
+        _playerAnimationCommand.ChangePlayerAnimation(PlayerAnimationType.Dance);
+    }
     [Button("Stop Movement")]
-    private void StopMovement()
+    public void StopMovement()
     {
         _playerMovementCommand.StopPlayerMovement();
+        if (playerRigidbody.velocity.y < 0f)
+        {
+            _playerAnimationCommand.ChangePlayerAnimation(PlayerAnimationType.Fall);
+            return;
+        }
         _playerAnimationCommand.ChangePlayerAnimation(PlayerAnimationType.Idle);
     }
 

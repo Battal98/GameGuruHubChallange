@@ -294,6 +294,12 @@ MonoBehaviour:
   m_MaximumFOV: 60
   m_MinimumOrthoSize: 1
   m_MaximumOrthoSize: 5000
+--- !u!4 &611227815 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3648810987644614887, guid: d1e951e67fc49cc43a552ce4dd6a92ea,
+    type: 3}
+  m_PrefabInstance: {fileID: 5441028539721209061}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &619977319
 GameObject:
   m_ObjectHideFlags: 0
@@ -365,7 +371,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 619977319}
   m_LocalRotation: {x: -0.000000029802326, y: -0, z: -0.000000011175872, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 6.27}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -896,15 +902,15 @@ MonoBehaviour:
   m_MaximumFOV: 60
   m_MinimumOrthoSize: 1
   m_MaximumOrthoSize: 5000
---- !u!1 &2056123572 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3648810986560008672, guid: d1e951e67fc49cc43a552ce4dd6a92ea,
+--- !u!4 &1624998301 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3648810987344593641, guid: d1e951e67fc49cc43a552ce4dd6a92ea,
     type: 3}
   m_PrefabInstance: {fileID: 5441028539721209061}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &2056123573 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3648810986560008673, guid: d1e951e67fc49cc43a552ce4dd6a92ea,
+--- !u!1 &2056123572 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3648810986560008672, guid: d1e951e67fc49cc43a552ce4dd6a92ea,
     type: 3}
   m_PrefabInstance: {fileID: 5441028539721209061}
   m_PrefabAsset: {fileID: 0}
@@ -1004,6 +1010,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2132300187}
   - component: {fileID: 2132300188}
+  - component: {fileID: 2132300189}
   m_Layer: 0
   m_Name: PlayerPhysicsController
   m_TagString: Player
@@ -1040,6 +1047,19 @@ CapsuleCollider:
   m_Height: 1.2302461
   m_Direction: 1
   m_Center: {x: -0.0022139251, y: 0.6021818, z: 7.245705e-16}
+--- !u!114 &2132300189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2132300186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b98aeda0885781342bc72ef49f152139, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerManager: {fileID: 619977320}
 --- !u!1001 &5441028539721209061
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1118,7 +1138,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Follow
       value: 
-      objectReference: {fileID: 619977323}
+      objectReference: {fileID: 0}
     - target: {fileID: 3648810986805864293, guid: d1e951e67fc49cc43a552ce4dd6a92ea,
         type: 3}
       propertyPath: m_Priority
@@ -1128,7 +1148,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ComponentOwner
       value: 
-      objectReference: {fileID: 2056123573}
+      objectReference: {fileID: 19919057}
     - target: {fileID: 3648810986833804228, guid: d1e951e67fc49cc43a552ce4dd6a92ea,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1178,7 +1198,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Follow
       value: 
-      objectReference: {fileID: 619977323}
+      objectReference: {fileID: 0}
     - target: {fileID: 3648810986833804229, guid: d1e951e67fc49cc43a552ce4dd6a92ea,
         type: 3}
       propertyPath: m_Priority
@@ -1188,7 +1208,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ComponentOwner
       value: 
-      objectReference: {fileID: 2056123573}
+      objectReference: {fileID: 1624998301}
     - target: {fileID: 3648810987344593642, guid: d1e951e67fc49cc43a552ce4dd6a92ea,
         type: 3}
       propertyPath: m_XDamping
@@ -1208,7 +1228,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Follow
       value: 
-      objectReference: {fileID: 619977323}
+      objectReference: {fileID: 0}
     - target: {fileID: 3648810987372232455, guid: d1e951e67fc49cc43a552ce4dd6a92ea,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1258,7 +1278,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Follow
       value: 
-      objectReference: {fileID: 619977323}
+      objectReference: {fileID: 0}
     - target: {fileID: 3648810987628868936, guid: d1e951e67fc49cc43a552ce4dd6a92ea,
         type: 3}
       propertyPath: m_Priority
@@ -1268,7 +1288,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ComponentOwner
       value: 
-      objectReference: {fileID: 19919057}
+      objectReference: {fileID: 611227815}
     - target: {fileID: 3648810987628868943, guid: d1e951e67fc49cc43a552ce4dd6a92ea,
         type: 3}
       propertyPath: m_LocalPosition.x
