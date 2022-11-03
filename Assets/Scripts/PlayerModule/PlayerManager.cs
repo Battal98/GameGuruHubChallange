@@ -26,6 +26,7 @@ public class PlayerManager : MonoBehaviour
     private Vector3 _spawnPosition;
     private PlayerMovementCommand _playerMovementCommand;
     private ChangePlayerAnimationCommand _playerAnimationCommand;
+    private bool _isWin = false;
 
     #endregion
 
@@ -40,6 +41,7 @@ public class PlayerManager : MonoBehaviour
     private void SubscribeEvents()
     {
         CoreGameSignals.Instance.onPlay += OnPlay;
+        CoreGameSignals.Instance.onReset += OnPlay;
         CoreGameSignals.Instance.onSetPlayerSpawnPosition += OnSetPlayerSpawnPosition;
         LevelSignals.Instance.onRestartLevel += OnRestart;
         LevelSignals.Instance.onLevelSuccessful += OnLevelSuccesful;
@@ -47,6 +49,7 @@ public class PlayerManager : MonoBehaviour
     private void UnsbscribeEvents()
     {
         CoreGameSignals.Instance.onPlay -= OnPlay;
+        CoreGameSignals.Instance.onReset -= OnPlay;
         CoreGameSignals.Instance.onSetPlayerSpawnPosition -= OnSetPlayerSpawnPosition;
         LevelSignals.Instance.onRestartLevel -= OnRestart;
         LevelSignals.Instance.onLevelSuccessful -= OnLevelSuccesful;
@@ -72,17 +75,20 @@ public class PlayerManager : MonoBehaviour
         _playerAnimationCommand = new ChangePlayerAnimationCommand(playerAnimator, _playerAnimationType);
 
         this.transform.position = _spawnPosition;
+        _isWin = false;
 
         CheckPlayerPosition(this.transform.position);
         CoreGameSignals.Instance.onSetCameraTarget?.Invoke(this.transform);
     }
-    private void CheckPlayerPosition(Vector3 position)
+    public void CheckPlayerPosition(Vector3 position)
     {
         _initialPosition = position;
     }
+
     [Button("Start Movement")]
     private void OnPlay()
     {
+        _isWin = false;
         _playerMovementCommand.StartPlayerMovement();
         _playerAnimationCommand.ChangePlayerAnimation(PlayerAnimationType.Run);
     }
@@ -93,7 +99,7 @@ public class PlayerManager : MonoBehaviour
     }
     private void OnLevelSuccesful()
     {
-        _playerAnimationCommand.ChangePlayerAnimation(PlayerAnimationType.Dance);
+        _isWin = true;
     }
     [Button("Stop Movement")]
     public void StopMovement()
@@ -102,6 +108,11 @@ public class PlayerManager : MonoBehaviour
         if (playerRigidbody.velocity.y < 0f)
         {
             _playerAnimationCommand.ChangePlayerAnimation(PlayerAnimationType.Fall);
+            return;
+        }
+        if (_isWin)
+        {
+            _playerAnimationCommand.ChangePlayerAnimation(PlayerAnimationType.Dance);
             return;
         }
         _playerAnimationCommand.ChangePlayerAnimation(PlayerAnimationType.Idle);

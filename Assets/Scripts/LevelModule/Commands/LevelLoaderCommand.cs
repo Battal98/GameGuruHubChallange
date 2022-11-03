@@ -17,9 +17,9 @@ public class LevelLoaderCommand
         _levelHolder = levelHolder;
     }
 
-    public void Execute(int _levelID)
+    public void Execute()
     {
-        Object.Instantiate(Resources.Load<GameObject>($"Prefabs/LevelPrefabs/Level {_levelID + 1}"),
+        Object.Instantiate(Resources.Load<GameObject>($"Prefabs/LevelPrefabs/Level {1}"),
             _levelHolder.transform);
     }
 }

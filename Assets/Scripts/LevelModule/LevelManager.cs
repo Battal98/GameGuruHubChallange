@@ -7,6 +7,8 @@ using LevelModule.Commands;
 using Sirenix.OdinInspector;
 using SaveLoadModule.Signals;
 using SaveLoadModule.Enums;
+using CutModule.Data;
+using CutModule.Data.ScriptableObjects;
 
 namespace LevelModule
 {
@@ -37,8 +39,8 @@ namespace LevelModule
 
         [ShowInInspector] 
         private int _levelID;
+        private int _levelIDForText;
         private int _uniqeID = 1234;
-        private int _value;
 
         #endregion
 
@@ -54,16 +56,16 @@ namespace LevelModule
         }
         private void InitLevelData()
         {
-            _levelID = GetLevelCount();
             levelData = GetLevelData();
-            _value = levelData.StackCount;
+            _levelID = levelData.LevelID;
+            _levelIDForText = levelData.LevelIDForText;
             if (!ES3.FileExists(this.levelData.GetKey().ToString() + $"{_uniqeID}.es3")) // _levelId aslýnda uniqeid
             {
                 if (!ES3.KeyExists(this.levelData.GetKey().ToString()))
                 {
-                    _levelID = GetLevelCount();
                     levelData = GetLevelData();
-                    _value = levelData.StackCount;
+                    _levelIDForText = levelData.LevelIDForText;
+                    _levelID = levelData.LevelID;
                     Save(_uniqeID);
                 }
             }
@@ -73,6 +75,7 @@ namespace LevelModule
         {
             _levelLoader = new LevelLoaderCommand(ref levelHolder);
             _clearActiveLevel = new ClearActiveLevelCommand(ref levelHolder);
+
         }
 
         #region Event Subscription
@@ -90,6 +93,7 @@ namespace LevelModule
             LevelSignals.Instance.onNextLevel += OnNextLevel;
             LevelSignals.Instance.onRestartLevel += OnRestartLevel;
             LevelSignals.Instance.onGetLevel += GetLevelCount;
+            LevelSignals.Instance.onGetLevelForText += GetLevelCountForText;
         }
 
         private void UnsubscribeEvents()
@@ -100,6 +104,7 @@ namespace LevelModule
             LevelSignals.Instance.onNextLevel -= OnNextLevel;
             LevelSignals.Instance.onRestartLevel -= OnRestartLevel;
             LevelSignals.Instance.onGetLevel-= GetLevelCount;
+            LevelSignals.Instance.onGetLevelForText -= GetLevelCountForText;
         }
 
         private void OnDisable()
@@ -111,17 +116,24 @@ namespace LevelModule
 
         private int GetLevelCount()
         {
-            return _levelID % Resources.Load<CD_Level>("Datas/CD_Level").LevelData.Count;
+            return _levelID;
+        }
+        private int GetLevelCountForText()
+        {
+            return _levelIDForText;
         }
         private LevelData GetLevelData()
         {
-            return Resources.Load<CD_Level>("Datas/CD_Level").LevelData[_levelID];
+            return Resources.Load<CD_Level>("Datas/CD_Level").LevelData;
+        }
+        private int GetStackCountData()
+        {
+            return Resources.Load<CD_StackCube>("Datas/CD_StackCube").StackCountsEachLevel.Count;
         }
 
         private void OnInitializeLevel()
         {
-            var newLevelData = GetLevelCount();
-            _levelLoader.Execute(newLevelData);
+            _levelLoader.Execute();
             LevelSignals.Instance.onLevelInitDone?.Invoke();
         }
 
@@ -133,6 +145,9 @@ namespace LevelModule
         private void OnNextLevel()
         {
             _levelID++;
+            _levelIDForText++;
+            if (_levelID >= GetStackCountData())
+                _levelID = 0;
             Save(_uniqeID);
             CoreGameSignals.Instance.onReset?.Invoke();
         }
@@ -140,19 +155,20 @@ namespace LevelModule
         private void OnRestartLevel()
         {
             LevelSignals.Instance.onClearActiveLevel?.Invoke();
-            CoreGameSignals.Instance.onReset?.Invoke();
+            //CoreGameSignals.Instance.onReset?.Invoke();
             LevelSignals.Instance.onLevelInitialize?.Invoke();
         }
         public void Load(int uniqeID)
         {
             LevelData _data = SaveLoadSignals.Instance.onLoadLevelData?.Invoke(SaveLoadType.LevelData, uniqeID);
             levelData = _data;
-            _value = levelData.StackCount;
+            _levelID = levelData.LevelID;
+            _levelIDForText = levelData.LevelIDForText;
         }
 
         public void Save(int uniqeID)
         {
-            LevelData newlevelData = new LevelData(_value);
+            LevelData newlevelData = new LevelData(_levelID, _levelIDForText);
             SaveLoadSignals.Instance.onSaveLevelData?.Invoke(newlevelData, uniqeID);
         }
     } 

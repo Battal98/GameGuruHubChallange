@@ -15,5 +15,6 @@ namespace LevelModule.Signals
         public UnityAction onRestartLevel = delegate { };
 
         public Func<int> onGetLevel = delegate { return 0; };
+        public Func<int> onGetLevelForText = delegate { return 0; };
     } 
 }

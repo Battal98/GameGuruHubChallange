@@ -2,7 +2,7 @@ namespace PoolModule.Enums
 {
     public enum PoolType
     {
-        CubeObj,
+        MovementStackCube,
         SphereObj,
         CapsuleObj,
     } 

@@ -14,13 +14,13 @@ namespace PlayerModule.Controllers
         {
             if (other.CompareTag("FallBox"))
             {
-                playerManager.StopMovement();
                 LevelSignals.Instance.onLevelFailed?.Invoke();
+                playerManager.StopMovement();
             }
             if (other.CompareTag("Finish"))
             {
-                playerManager.StopMovement();
                 LevelSignals.Instance.onLevelSuccessful?.Invoke();
+                playerManager.StopMovement();
             }
             if (other.TryGetComponent(out ICollectable collectable))
             {

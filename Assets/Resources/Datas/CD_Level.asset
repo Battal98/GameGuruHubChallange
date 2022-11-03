@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LevelData:
   - StackCount: 6
+  - StackCount: 0
   LevelID: 0

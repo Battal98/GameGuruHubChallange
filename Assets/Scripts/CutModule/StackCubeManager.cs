@@ -24,6 +24,7 @@ namespace CutModule
         #region Event Subscriptions
         private void OnEnable()
         {
+            _isMoveCube = true;
             SubscribeEvents();
         }
 

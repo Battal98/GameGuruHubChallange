@@ -17,5 +17,5 @@ MonoBehaviour:
     m_Values:
     - ObjectType: {fileID: 2654792769663275691, guid: d3e3d57457d48984a90b29aa179cc167,
         type: 3}
-      initalAmount: 50
+      initalAmount: 15
       isDynamic: 1
