@@ -28,6 +28,7 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
     private int _colorCount;
     private int _maxCubeCount;
     private bool _isFailed = false;
+    private bool isLeft;
     private StackCubeData _stackCubeData;
 
     #endregion
@@ -60,6 +61,7 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
         InputSignals.Instance.onClick += OnClick;
         LevelSignals.Instance.onRestartLevel += OnRestart;
         LevelSignals.Instance.onLevelFailed += OnLevelFailed;
+        LevelSignals.Instance.onLevelSuccessful += OnLevelSuccessful;
         CoreGameSignals.Instance.onReset += OnReset;
     }
     private void UnsbscribeEvents()
@@ -68,8 +70,10 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
         InputSignals.Instance.onClick -= OnClick;
         LevelSignals.Instance.onRestartLevel -= OnRestart;
         LevelSignals.Instance.onLevelFailed -= OnLevelFailed;
+        LevelSignals.Instance.onLevelSuccessful -= OnLevelSuccessful;
         CoreGameSignals.Instance.onReset -= OnReset;
     }
+
     private void OnDisable()
     {
         UnsbscribeEvents();
@@ -88,13 +92,13 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
             
         if (_count >= _maxCubeCount)
         {
-            if (!finishObject.activeInHierarchy)
+            if (finishObject.activeInHierarchy)
                 GetFinishObject();
             return;
         }
 
         var movementStackCube = GetObject(PoolType.MovementStackCube);
-        movementStackCube.transform.localScale = _stackCubes[0].transform.localScale;
+        movementStackCube.transform.localScale = _stackCubes[_stackCubes.Count-1].transform.localScale;
         var objMat = movementStackCube.GetComponentInChildren<MeshRenderer>().material;
         float objScaleZ = movementStackCube.transform.localScale.z;
         float lastObjPosZ = _stackCubes[_stackCubes.Count - 1].transform.position.z;
@@ -107,12 +111,22 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
 
         if (_count % 2 == 0)
             movementStackCube.transform.position = new Vector3(_stackCubeData.SpawnDotsX.x, movementStackCube.transform.position.y, _stackCubeOffsetZ);
+            
         else
             movementStackCube.transform.position = new Vector3(_stackCubeData.SpawnDotsX.y, movementStackCube.transform.position.y, _stackCubeOffsetZ);
+            
 
         _stackCubes.Add(movementStackCube);
         _count++;
         _colorCount++;
+    }
+    private void OnLevelSuccessful()
+    {
+        _stackCubes[0].transform.position = new Vector3(_stackCubes[0].transform.position.x,
+            _stackCubes[0].transform.position.y,
+            finishObject.transform.position.z + ((finishObject.transform.localScale.z + _stackCubes[0].transform.localScale.z) / 2));
+
+        _stackCubes[0].GetComponentInChildren<MeshRenderer>().material.color = _stackCubes[_stackCubes.Count - 1].GetComponentInChildren<MeshRenderer>().material.color;
     }
     private void GetFinishObject()
     {
@@ -131,9 +145,9 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
         }
 
         var obj = _stackCubes[0];
-        _stackCubes.Add(obj);
         _stackCubes.Clear();
         _stackCubes.TrimExcess();
+        _stackCubes.Add(obj);
 
         _isFailed = false;
         _stackCubeOffsetZ = 0;
@@ -147,8 +161,6 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
     }
     private void OnReset()
     {
-        _stackCubes[0].transform.position = new Vector3(0, _stackCubes[0].transform.position.y, finishObject.transform.position.z);
-        _stackCubes[0].GetComponentInChildren<MeshRenderer>().material.color = _stackCubes[_stackCubes.Count - 1].GetComponentInChildren<MeshRenderer>().material.color;
         _count = 0;
         ResetSpawner();
         OnClick();
@@ -161,8 +173,6 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
         _stackCubeData = GetData().StackCubeData;
         var lastMaxCubeCount = _maxCubeCount;
         _maxCubeCount = GetData().StackCountsEachLevel[LevelSignals.Instance.onGetLevel.Invoke()];
-        finishObject.transform.position = new Vector3(0, finishObject.transform.position.y, 0);
-        finishObject.SetActive(false);
     }
     public void ReleaseObject(GameObject obj, PoolType poolType)
     {
@@ -170,13 +180,11 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
     }
 
     private void CutObject()
-    {                           //current                                                 //last
-        float cutEdge = _stackCubes[_stackCubes.Count - 1].transform.position.x - _stackCubes[_stackCubes.Count - 2].transform.position.x;
-        Debug.Log("cutEdge: " + cutEdge);
-        float direction = cutEdge > 0 ? 1f : -1;
+    {   
+        float cutEdge = GetCutEdge();
+        float direction = cutEdge > 0 ? 1f : -1f;
 
         float stackCubeXSize = _stackCubes[_stackCubes.Count - 2].transform.localScale.x - Mathf.Abs(cutEdge);
-        Debug.Log("stackcubeXSize: " + stackCubeXSize);
         float cuttedCubeSize = _stackCubes[_stackCubes.Count - 1].transform.localScale.x - stackCubeXSize;
 
         float stackCubeXPosition = _stackCubes[_stackCubes.Count - 2].transform.position.x + (cutEdge / 2);
@@ -192,8 +200,14 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
         float cuttedCubeEdge = _stackCubes[_stackCubes.Count - 1].transform.position.x + (stackCubeXSize / 2 * direction);
         float cuttedCubeXPosition = cuttedCubeEdge + cuttedCubeSize / 2f * direction;
 
+
         SpawnCuttedCube(cuttedCubeXPosition, cuttedCubeSize);
 
+    }
+
+    private float GetCutEdge()
+    {
+        return _stackCubes[_stackCubes.Count - 1].transform.position.x - _stackCubes[_stackCubes.Count - 2].transform.position.x;
     }
 
     private void SpawnCuttedCube(float cuttedCubeXPosition, float cuttedCubeSize)
