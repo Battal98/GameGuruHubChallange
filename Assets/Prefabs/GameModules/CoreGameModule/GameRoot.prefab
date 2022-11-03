@@ -1424,7 +1424,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelData:
-    StackCount: 0
+    LevelID: 0
+    LevelIDForText: 0
   levelHolder: {fileID: 3648810986895041729}
 --- !u!1001 &1620447054019338405
 PrefabInstance:

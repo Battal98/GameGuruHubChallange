@@ -57,7 +57,6 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
     }
     private void SubscribeEvents()
     {
-        //InputSignals.Instance.onClick += CutObject;
         InputSignals.Instance.onClick += OnClick;
         LevelSignals.Instance.onRestartLevel += OnRestart;
         LevelSignals.Instance.onLevelFailed += OnLevelFailed;
@@ -66,12 +65,12 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
     }
     private void UnsbscribeEvents()
     {
-        //InputSignals.Instance.onClick -= CutObject;
         InputSignals.Instance.onClick -= OnClick;
         LevelSignals.Instance.onRestartLevel -= OnRestart;
         LevelSignals.Instance.onLevelFailed -= OnLevelFailed;
         LevelSignals.Instance.onLevelSuccessful -= OnLevelSuccessful;
         CoreGameSignals.Instance.onReset -= OnReset;
+
     }
 
     private void OnDisable()
@@ -117,6 +116,7 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
             
 
         _stackCubes.Add(movementStackCube);
+        CoreGameSignals.Instance.onSetStackCubeTransform?.Invoke(_stackCubes[_stackCubes.Count - 2].transform);
         _count++;
         _colorCount++;
     }

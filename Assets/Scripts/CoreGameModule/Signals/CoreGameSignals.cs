@@ -16,5 +16,7 @@ namespace CoreGameModule.Signals
         public UnityAction<int> onUpdateCoinScore = delegate { };
         public UnityAction<int> onUpdateStarScore = delegate { };
         public UnityAction<Vector3> onSetPlayerSpawnPosition = delegate { };
+
+        public UnityAction<Transform> onSetStackCubeTransform = delegate { };
     } 
 }

@@ -6,6 +6,7 @@ using PlayerModule.Enums;
 using PlayerModule.Data.ScriptableObjects;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using System;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -13,16 +14,19 @@ public class PlayerManager : MonoBehaviour
 
     #region Serializable Variables
     [SerializeField]
+    private PlayerMovementController _playerMovementController;
+    [SerializeField]
     private Rigidbody playerRigidbody;
     [SerializeField]
     private Animator playerAnimator;
+    [SerializeField]
+    private Transform target;
     #endregion
 
     #region Private Variables
     private PlayerData _playerData;
     private Vector3 _initialPosition;
     private Vector3 _spawnPosition;
-    private PlayerMovementCommand _playerMovementCommand;
     private ChangePlayerAnimationCommand _playerAnimationCommand;
     private bool _isWin = false;
 
@@ -43,6 +47,7 @@ public class PlayerManager : MonoBehaviour
         CoreGameSignals.Instance.onSetPlayerSpawnPosition += OnSetPlayerSpawnPosition;
         LevelSignals.Instance.onRestartLevel += OnRestart;
         LevelSignals.Instance.onLevelSuccessful += OnLevelSuccesful;
+        CoreGameSignals.Instance.onSetStackCubeTransform += OnSetStackCubeTransform;
     }
     private void UnsbscribeEvents()
     {
@@ -51,7 +56,9 @@ public class PlayerManager : MonoBehaviour
         CoreGameSignals.Instance.onSetPlayerSpawnPosition -= OnSetPlayerSpawnPosition;
         LevelSignals.Instance.onRestartLevel -= OnRestart;
         LevelSignals.Instance.onLevelSuccessful -= OnLevelSuccesful;
+        CoreGameSignals.Instance.onSetStackCubeTransform -= OnSetStackCubeTransform;
     }
+
     private void OnDisable()
     {
         UnsbscribeEvents();
@@ -69,7 +76,6 @@ public class PlayerManager : MonoBehaviour
     }
     private void InitJobs()
     {
-        _playerMovementCommand = new PlayerMovementCommand(playerRigidbody, _playerData.ForwardSpeed);
         _playerAnimationCommand = new ChangePlayerAnimationCommand(playerAnimator);
 
         this.transform.position = _spawnPosition;
@@ -87,7 +93,7 @@ public class PlayerManager : MonoBehaviour
     private void OnPlay()
     {
         _isWin = false;
-        _playerMovementCommand.StartPlayerMovement();
+        _playerMovementController.StartPlayerMovement();
         _playerAnimationCommand.ChangePlayerAnimation(PlayerAnimationType.Run);
     }
     private void OnRestart()
@@ -102,7 +108,7 @@ public class PlayerManager : MonoBehaviour
     [Button("Stop Movement")]
     public void StopMovement()
     {
-        _playerMovementCommand.StopPlayerMovement();
+        _playerMovementController.StopPlayerMovement();
         if (playerRigidbody.velocity.y < 0f)
         {
             _playerAnimationCommand.ChangePlayerAnimation(PlayerAnimationType.Fall);
@@ -120,8 +126,13 @@ public class PlayerManager : MonoBehaviour
         _spawnPosition = spawnPositionTarget;
     }
 
+    private void OnSetStackCubeTransform(Transform arg0)
+    {
+        target = arg0;
+    }
+
     private void FixedUpdate()
     {
-        _playerMovementCommand.PlayerMovement();
+        _playerMovementController.PlayerMovement(playerRigidbody, _playerData.ForwardSpeed, target);
     }
 }
