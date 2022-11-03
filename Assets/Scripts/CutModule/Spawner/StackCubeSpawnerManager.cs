@@ -8,6 +8,8 @@ using CutModule.Data;
 using CutModule.Data.ScriptableObjects;
 using CutModule;
 using CoreGameModule.Signals;
+using AudioModule.Signals;
+using AudioModule.Enums;
 
 public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePoolObject
 {
@@ -28,8 +30,9 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
     private int _colorCount;
     private int _maxCubeCount;
     private bool _isFailed = false;
-    private bool isLeft;
     private StackCubeData _stackCubeData;
+    private float pitchValue = 1f;
+    private int comboValue;
 
     #endregion
 
@@ -88,7 +91,7 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
             _stackCubes[_stackCubes.Count - 1].transform.localScale = _stackCubes[_stackCubes.Count - 2].transform.localScale;
             CutObject();
         }
-            
+
         if (_count >= _maxCubeCount)
         {
             if (finishObject.activeInHierarchy)
@@ -117,6 +120,21 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
 
         _stackCubes.Add(movementStackCube);
         CoreGameSignals.Instance.onSetStackCubeTransform?.Invoke(_stackCubes[_stackCubes.Count - 2].transform);
+
+        if (_count == (_maxCubeCount / 2))
+        {
+            var starObj = GetObject(PoolType.StarObject);
+            starObj.transform.position = new Vector3(_stackCubes[_stackCubes.Count - 2].transform.position.x,
+               _stackCubes[_stackCubes.Count - 2].transform.position.y + 0.5f,
+               _stackCubes[_stackCubes.Count - 2].transform.position.z);
+        }
+        else
+        {
+            var coinObj = GetObject(PoolType.CoinObject);
+            coinObj.transform.position = new Vector3(_stackCubes[_stackCubes.Count - 2].transform.position.x,
+                _stackCubes[_stackCubes.Count - 2].transform.position.y + 0.5f,
+                _stackCubes[_stackCubes.Count - 2].transform.position.z);
+        }
         _count++;
         _colorCount++;
     }
@@ -132,6 +150,11 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
     {
         finishObject.transform.position = new Vector3(0, finishObject.transform.position.y, _stackCubes[_stackCubes.Count - 1].transform.position.z + (finishObject.transform.localScale.z + (finishObject.transform.localScale.z / 2)));
         finishObject.SetActive(true);
+        var gemObject = GetObject(PoolType.GemObject);
+        gemObject.transform.position = new Vector3(finishObject.transform.position.x,
+            finishObject.transform.position.y + 0.5f,
+            finishObject.transform.position.z);
+        CoreGameSignals.Instance.onSetStackCubeTransform?.Invoke(finishObject.transform);
     }
     private void OnLevelFailed() => _isFailed = true;
 
@@ -189,20 +212,40 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
 
         float stackCubeXPosition = _stackCubes[_stackCubes.Count - 2].transform.position.x + (cutEdge / 2);
 
-        _stackCubes[_stackCubes.Count - 1].transform.localScale = new Vector3(stackCubeXSize,
-            _stackCubes[_stackCubes.Count - 1].transform.localScale.y,
-            _stackCubes[_stackCubes.Count - 1].transform.localScale.z);
-
-        _stackCubes[_stackCubes.Count - 1].transform.position = new Vector3(stackCubeXPosition,
-            _stackCubes[_stackCubes.Count - 1].transform.position.y,
-            _stackCubes[_stackCubes.Count - 1].transform.position.z);
-
         float cuttedCubeEdge = _stackCubes[_stackCubes.Count - 1].transform.position.x + (stackCubeXSize / 2 * direction);
         float cuttedCubeXPosition = cuttedCubeEdge + cuttedCubeSize / 2f * direction;
 
+        CheckStackCube(cutEdge, stackCubeXSize, stackCubeXPosition, cuttedCubeXPosition, cuttedCubeSize);
+    }
 
-        SpawnCuttedCube(cuttedCubeXPosition, cuttedCubeSize);
+    private void CheckStackCube(float cutEdge, float stackCubeXSize, float stackCubeXPosition, float cuttedCubeXPosition, float cuttedCubeSize)
+    {
+        if (Mathf.Abs(cutEdge) <= 0.1f)
+        {
+            comboValue++;
+            AudioSignals.Instance.onPlaySound(SoundType.Correct, pitchValue);
+            if (pitchValue <= 2f)
+                pitchValue += 0.1f;
 
+            _stackCubes[_stackCubes.Count - 1].transform.localScale = new Vector3(stackCubeXSize,
+            _stackCubes[_stackCubes.Count - 1].transform.localScale.y,
+            _stackCubes[_stackCubes.Count - 1].transform.localScale.z);
+
+            _stackCubes[_stackCubes.Count - 1].transform.position = new Vector3(stackCubeXPosition,
+                _stackCubes[_stackCubes.Count - 1].transform.position.y,
+                _stackCubes[_stackCubes.Count - 1].transform.position.z);
+
+        }
+        else
+        {
+            pitchValue = 1f;
+            if (comboValue > 2)
+            {
+                AudioSignals.Instance.onPlaySound(SoundType.Incorrect, pitchValue);
+            }
+            comboValue = 0;
+            SpawnCuttedCube(cuttedCubeXPosition, cuttedCubeSize);
+        }
     }
 
     private float GetCutEdge()
