@@ -1,5 +1,6 @@
 using CollectableModule.Enums;
 using CollectableModule.Interfaces;
+using CoreGameModule.Signals;
 using LevelModule.Signals;
 using UnityEngine;
 
@@ -22,10 +23,12 @@ public class CollectablesManager : MonoBehaviour, ICollectable
     private void SubscribeEvents()
     {
         LevelSignals.Instance.onRestartLevel += OnRestart;
+        CoreGameSignals.Instance.onReset += OnRestart;
     }
     private void UnsbscribeEvents()
     {
         LevelSignals.Instance.onRestartLevel -= OnRestart;
+        CoreGameSignals.Instance.onReset -= OnRestart;
     }
 
     private void OnDisable()

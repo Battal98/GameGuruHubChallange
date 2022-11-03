@@ -1,6 +1,4 @@
 using PlayerModule.Enums;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace PlayerModule.Commands
@@ -17,10 +15,9 @@ namespace PlayerModule.Commands
         #endregion
 
         #endregion
-        public ChangePlayerAnimationCommand(Animator animator, PlayerAnimationType playerAnimationType)
+        public ChangePlayerAnimationCommand(Animator animator)
         {
             _animator = animator;
-            _playerAnimationType = playerAnimationType;
         }
         public void ChangePlayerAnimation(PlayerAnimationType playerAnimationType)
         {

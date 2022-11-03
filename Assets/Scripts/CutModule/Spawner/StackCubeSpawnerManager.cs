@@ -11,7 +11,7 @@ using CoreGameModule.Signals;
 
 public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePoolObject
 {
-    #region Private Variables
+    #region Serializable Variables
 
     [SerializeField]
     private List<GameObject> _stackCubes;
@@ -19,15 +19,18 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
     [SerializeField]
     private GameObject finishObject;
 
+    #endregion
+
+    #region Private Variables
+
     private float _stackCubeOffsetZ = 0;
     private int _count;
     private int _colorCount;
     private int _maxCubeCount;
     private bool _isFailed = false;
+    private StackCubeData _stackCubeData;
 
     #endregion
-
-    private StackCubeData _stackCubeData;
 
     private void Awake()
     {
@@ -37,7 +40,6 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
     {
         return Resources.Load<CD_StackCube>("Datas/CD_StackCube");
     }
-
     private void Start()
     {
         OnClick();
@@ -46,20 +48,31 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
     {
         return PoolSignals.Instance.onGetObjectFromPool(poolType);
     }
+
     #region Event Subscriptions
     private void OnEnable()
     {
+        SubscribeEvents();
+    }
+    private void SubscribeEvents()
+    {
+        //InputSignals.Instance.onClick += CutObject;
         InputSignals.Instance.onClick += OnClick;
         LevelSignals.Instance.onRestartLevel += OnRestart;
         LevelSignals.Instance.onLevelFailed += OnLevelFailed;
         CoreGameSignals.Instance.onReset += OnReset;
     }
-    private void OnDisable()
+    private void UnsbscribeEvents()
     {
+        //InputSignals.Instance.onClick -= CutObject;
         InputSignals.Instance.onClick -= OnClick;
         LevelSignals.Instance.onRestartLevel -= OnRestart;
         LevelSignals.Instance.onLevelFailed -= OnLevelFailed;
         CoreGameSignals.Instance.onReset -= OnReset;
+    }
+    private void OnDisable()
+    {
+        UnsbscribeEvents();
     }
     #endregion
 
@@ -67,6 +80,12 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
     {
         if (_isFailed)
             return;
+        if (_stackCubes.Count > 1)
+        {
+            _stackCubes[_stackCubes.Count - 1].transform.localScale = _stackCubes[_stackCubes.Count - 2].transform.localScale;
+            CutObject();
+        }
+            
         if (_count >= _maxCubeCount)
         {
             if (!finishObject.activeInHierarchy)
@@ -101,6 +120,24 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
         finishObject.SetActive(true);
     }
     private void OnLevelFailed() => _isFailed = true;
+
+    #region Reset and Restart Jobs
+
+    private void ResetSpawner()
+    {
+        for (int i = 1; i < _stackCubes.Count; i++)
+        {
+            ReleaseObject(_stackCubes[i], PoolType.MovementStackCube);
+        }
+
+        var obj = _stackCubes[0];
+        _stackCubes.Add(obj);
+        _stackCubes.Clear();
+        _stackCubes.TrimExcess();
+
+        _isFailed = false;
+        _stackCubeOffsetZ = 0;
+    }
     private void OnRestart()
     {
         OnClick();
@@ -111,12 +148,13 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
     private void OnReset()
     {
         _stackCubes[0].transform.position = new Vector3(0, _stackCubes[0].transform.position.y, finishObject.transform.position.z);
-        _stackCubes[0].GetComponentInChildren<MeshRenderer>().material.color = _stackCubes[_stackCubes.Count-1].GetComponentInChildren<MeshRenderer>().material.color;
+        _stackCubes[0].GetComponentInChildren<MeshRenderer>().material.color = _stackCubes[_stackCubes.Count - 1].GetComponentInChildren<MeshRenderer>().material.color;
         _count = 0;
         ResetSpawner();
         OnClick();
         Init();
-    }
+    } 
+    #endregion
 
     private void Init()
     {
@@ -125,27 +163,58 @@ public class StackCubeSpawnerManager : MonoBehaviour, IGetPoolObject, IReleasePo
         _maxCubeCount = GetData().StackCountsEachLevel[LevelSignals.Instance.onGetLevel.Invoke()];
         finishObject.transform.position = new Vector3(0, finishObject.transform.position.y, 0);
         finishObject.SetActive(false);
-        //finishObject.transform.position = new Vector3(0, finishObject.transform.position.y,
-        //   (lastMaxCubeCount * _stackCubes[0].transform.localScale.z +(finishObject.transform.localScale.z + (finishObject.transform.localScale.z / 2))) 
-        //   + ((_maxCubeCount * _stackCubes[0].transform.localScale.z) + (finishObject.transform.localScale.z + (finishObject.transform.localScale.z / 2))));
     }
     public void ReleaseObject(GameObject obj, PoolType poolType)
     {
         PoolSignals.Instance.onReleaseObjectFromPool(obj, poolType);
     }
 
-    private void ResetSpawner()
+    private void CutObject()
+    {                           //current                                                 //last
+        float cutEdge = _stackCubes[_stackCubes.Count - 1].transform.position.x - _stackCubes[_stackCubes.Count - 2].transform.position.x;
+        Debug.Log("cutEdge: " + cutEdge);
+        float direction = cutEdge > 0 ? 1f : -1;
+
+        float stackCubeXSize = _stackCubes[_stackCubes.Count - 2].transform.localScale.x - Mathf.Abs(cutEdge);
+        Debug.Log("stackcubeXSize: " + stackCubeXSize);
+        float cuttedCubeSize = _stackCubes[_stackCubes.Count - 1].transform.localScale.x - stackCubeXSize;
+
+        float stackCubeXPosition = _stackCubes[_stackCubes.Count - 2].transform.position.x + (cutEdge / 2);
+
+        _stackCubes[_stackCubes.Count - 1].transform.localScale = new Vector3(stackCubeXSize,
+            _stackCubes[_stackCubes.Count - 1].transform.localScale.y,
+            _stackCubes[_stackCubes.Count - 1].transform.localScale.z);
+
+        _stackCubes[_stackCubes.Count - 1].transform.position = new Vector3(stackCubeXPosition,
+            _stackCubes[_stackCubes.Count - 1].transform.position.y,
+            _stackCubes[_stackCubes.Count - 1].transform.position.z);
+
+        float cuttedCubeEdge = _stackCubes[_stackCubes.Count - 1].transform.position.x + (stackCubeXSize / 2 * direction);
+        float cuttedCubeXPosition = cuttedCubeEdge + cuttedCubeSize / 2f * direction;
+
+        SpawnCuttedCube(cuttedCubeXPosition, cuttedCubeSize);
+
+    }
+
+    private void SpawnCuttedCube(float cuttedCubeXPosition, float cuttedCubeSize)
     {
-        for (int i = 1; i < _stackCubes.Count; i++)
-        {
-            ReleaseObject(_stackCubes[i], PoolType.MovementStackCube);
-            _stackCubes[i].GetComponent<StackCubeManager>().enabled = true;
-        }
-        var obj = _stackCubes[0];
-        _stackCubes.Clear();
-        _stackCubes.TrimExcess();
-        _stackCubes.Add(obj);
-        _isFailed = false;
-        _stackCubeOffsetZ = 0;
+        var cuttedObj = GetObject(PoolType.CuttedCubes);
+
+        cuttedObj.transform.localScale = new Vector3(cuttedCubeSize,
+            _stackCubes[_stackCubes.Count - 1].transform.localScale.y,
+            _stackCubes[_stackCubes.Count - 1].transform.localScale.z);
+        cuttedObj.transform.position = new Vector3(cuttedCubeXPosition,
+            _stackCubes[_stackCubes.Count - 1].transform.position.y,
+            _stackCubes[_stackCubes.Count - 1].transform.position.z);
+
+        cuttedObj.GetComponentInChildren<MeshRenderer>().material.color = _stackCubes[_stackCubes.Count - 1].GetComponentInChildren<MeshRenderer>().material.color;
+
+    }
+
+    private void TestObj(float value)
+    {
+        var obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        obj.transform.localScale = Vector3.one * 0.1f;
+        obj.transform.position = new Vector3(value, _stackCubes[_stackCubes.Count - 2].transform.position.y, _stackCubes[_stackCubes.Count - 2].transform.position.z);
     }
 }

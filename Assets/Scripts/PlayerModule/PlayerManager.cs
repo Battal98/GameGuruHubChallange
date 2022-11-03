@@ -19,8 +19,6 @@ public class PlayerManager : MonoBehaviour
     #endregion
 
     #region Private Variables
-    [ShowInInspector]
-    private PlayerAnimationType _playerAnimationType;
     private PlayerData _playerData;
     private Vector3 _initialPosition;
     private Vector3 _spawnPosition;
@@ -72,7 +70,7 @@ public class PlayerManager : MonoBehaviour
     private void InitJobs()
     {
         _playerMovementCommand = new PlayerMovementCommand(playerRigidbody, _playerData.ForwardSpeed);
-        _playerAnimationCommand = new ChangePlayerAnimationCommand(playerAnimator, _playerAnimationType);
+        _playerAnimationCommand = new ChangePlayerAnimationCommand(playerAnimator);
 
         this.transform.position = _spawnPosition;
         _isWin = false;

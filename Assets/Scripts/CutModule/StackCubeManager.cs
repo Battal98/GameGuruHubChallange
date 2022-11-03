@@ -10,11 +10,12 @@ namespace CutModule
         private StackCubeMovementController _stackCubeMovementController;
 
         private StackCubeData _stackCubeData;
-        private bool _isMoveCube = true;
+        private float _moveSpeed;
 
         private void Awake()
         {
             _stackCubeData = GetData();
+            _moveSpeed = _stackCubeData.StackCubeSpeed;
         }
         private StackCubeData GetData()
         {
@@ -24,7 +25,7 @@ namespace CutModule
         #region Event Subscriptions
         private void OnEnable()
         {
-            _isMoveCube = true;
+            _stackCubeData.StackCubeSpeed = _moveSpeed;
             SubscribeEvents();
         }
 
@@ -45,13 +46,11 @@ namespace CutModule
 
         private void Update()
         {
-            if (_isMoveCube)
-                _stackCubeMovementController.XAxisMovement(this.transform, _stackCubeData.MinMaxPushValueX, _stackCubeData.StackCubeSpeed);
+            _stackCubeMovementController.XAxisMovement(this.transform, _stackCubeData.MinMaxPushValueX, _stackCubeData.StackCubeSpeed);
         }
         private void OnClick()
         {
-            _isMoveCube = false;
-            this.enabled = false;
+            _stackCubeData.StackCubeSpeed = 0;
         }
     } 
 }
