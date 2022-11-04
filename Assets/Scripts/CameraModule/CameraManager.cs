@@ -94,29 +94,29 @@ namespace CameraModule
         private void SetCameraState(CameraStatesType _cameraState)
         {
             cameraStates = _cameraState;
+            winCamera.GetCinemachineComponent<CinemachinePOV>().m_HorizontalAxis.Value = -360;
+            DOTween.KillAll();
             animator.Play(cameraStates.ToString());
         }
 
         public void OnLevelSuccesful()
         {
-            DOTween.KillAll();
             SetCameraState(CameraStatesType.WinCamera);
             winCamera.GetCinemachineComponent<CinemachinePOV>().m_VerticalAxis.m_InputAxisName = "";
             winCamera.GetCinemachineComponent<CinemachinePOV>().m_HorizontalAxis.m_InputAxisName = "";
             winCamera.m_LookAt = target.transform;
             stateDrivenCamera.m_Follow = target.transform;
-            DOTween.To(() => 
-            winCamera.GetCinemachineComponent<CinemachinePOV>().m_HorizontalAxis.Value, 
-            x => winCamera.GetCinemachineComponent<CinemachinePOV>().m_HorizontalAxis.Value = x, 345, 10f)
+            DOTween.To(() =>
+            winCamera.GetCinemachineComponent<CinemachinePOV>().m_HorizontalAxis.Value,
+            x => winCamera.GetCinemachineComponent<CinemachinePOV>().m_HorizontalAxis.Value = x, 360, 10f)
             .SetLoops(-1, LoopType.Restart)
-            .SetEase(Ease.Linear) ;
+            .SetEase(Ease.Linear);
         }
 
         public void OnLevelFailed()
         {
             SetCameraState(CameraStatesType.FailedCamera);
             stateDrivenCamera.m_LookAt = null;
-            DOTween.KillAll();
             DOVirtual.DelayedCall(1f,()=> stateDrivenCamera.Follow = null);
         }
 
@@ -126,7 +126,6 @@ namespace CameraModule
             SetCameraState(CameraStatesType.GameCamera);
             stateDrivenCamera.Follow = target.transform;
             stateDrivenCamera.m_LookAt = null;
-            DOTween.KillAll();
         }
 
         private void OnReset()
