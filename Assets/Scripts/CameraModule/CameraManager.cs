@@ -21,6 +21,8 @@ namespace CameraModule
 
         [SerializeField] 
         private CinemachineStateDrivenCamera stateDrivenCamera;
+        [SerializeField] 
+        private CinemachineVirtualCamera winCamera;
 
         [SerializeField]
         private Animator animator;
@@ -85,6 +87,8 @@ namespace CameraModule
         {
             target = _target;
             stateDrivenCamera.Follow = target;
+            stateDrivenCamera.m_LookAt = null;
+            DOTween.KillAll();
         }
 
         private void SetCameraState(CameraStatesType _cameraState)
@@ -95,13 +99,24 @@ namespace CameraModule
 
         public void OnLevelSuccesful()
         {
+            DOTween.KillAll();
             SetCameraState(CameraStatesType.WinCamera);
-            stateDrivenCamera.Follow = target.transform;
+            winCamera.GetCinemachineComponent<CinemachinePOV>().m_VerticalAxis.m_InputAxisName = "";
+            winCamera.GetCinemachineComponent<CinemachinePOV>().m_HorizontalAxis.m_InputAxisName = "";
+            winCamera.m_LookAt = target.transform;
+            stateDrivenCamera.m_Follow = target.transform;
+            DOTween.To(() => 
+            winCamera.GetCinemachineComponent<CinemachinePOV>().m_HorizontalAxis.Value, 
+            x => winCamera.GetCinemachineComponent<CinemachinePOV>().m_HorizontalAxis.Value = x, 345, 10f)
+            .SetLoops(-1, LoopType.Restart)
+            .SetEase(Ease.Linear) ;
         }
 
         public void OnLevelFailed()
         {
             SetCameraState(CameraStatesType.FailedCamera);
+            stateDrivenCamera.m_LookAt = null;
+            DOTween.KillAll();
             DOVirtual.DelayedCall(1f,()=> stateDrivenCamera.Follow = null);
         }
 
@@ -110,12 +125,15 @@ namespace CameraModule
             GetInitialPosition();
             SetCameraState(CameraStatesType.GameCamera);
             stateDrivenCamera.Follow = target.transform;
+            stateDrivenCamera.m_LookAt = null;
+            DOTween.KillAll();
         }
 
         private void OnReset()
         {
             SetCameraState(CameraStatesType.GameCamera);
             OnSetCameraTarget(target);
+
         }
 
 #if UNITY_EDITOR
