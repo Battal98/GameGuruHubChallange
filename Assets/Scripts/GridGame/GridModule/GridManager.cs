@@ -6,6 +6,7 @@ using UnityEngine;
 using PoolModule.Enums;
 using GridGame.UIModule;
 using GridGame.GridModule.Signals;
+using GridGame.InputModule.Signals;
 
 namespace GridGame.GridModule
 {
@@ -13,17 +14,20 @@ namespace GridGame.GridModule
     {
         [SerializeField]
         private Transform gridPivotTarget;
+
         [ReadOnly]
         [ShowInInspector]
-        private List<Vector3> gridPositionsData = new List<Vector3>();
+        private Vector2[] grids;
 
         private Vector3 _gridPositions;
         private float gridPivotCalculate;
         [SerializeField]
         private GridData GridData;
+        private Camera _camera;
 
         private void Start()
         {
+            _camera = Camera.main;
             OnCreateGrid(GridData.GridSize);
         }
 
@@ -36,31 +40,37 @@ namespace GridGame.GridModule
         private void SubsciribeEvents()
         {
             GridSignals.Instance.onCreateGrid += OnCreateGrid;
+            InputSignals.Instance.onClick += OnClick;
         }
         private void UnsubsciribeEvents()
         {
             GridSignals.Instance.onCreateGrid -= OnCreateGrid;
+            InputSignals.Instance.onClick -= OnClick;
         }
         private void OnDisable()
         {
             UnsubsciribeEvents();
         }
         #endregion
-        [Button]
+
+        private void OnClick()
+        {
+
+        }
+
         private void OnCreateGrid(int gridInputSize)
         {
             if (this.transform.childCount > 0)
                 DeleteGrid();
+            grids = new Vector2[gridInputSize * gridInputSize];
             GridData.GridSize = gridInputSize;
-            gridPositionsData.Clear();
-            gridPositionsData.TrimExcess();
             var gridCount = GridData.GridSize * GridData.GridSize;
             if (GridData.GridSize % 2 == 0)
                 gridPivotCalculate = GridData.GridSize / 2 - 0.5f;
             else
                 gridPivotCalculate = GridData.GridSize / 2;
             var cameraCross = GridData.GridOffsets.x > GridData.GridOffsets.y ? GridData.GridOffsets.x : GridData.GridOffsets.y;
-            Camera.main.orthographicSize = GridData.GridSize * cameraCross;
+            _camera.orthographicSize = GridData.GridSize * cameraCross;
 
             gridPivotTarget.transform.localPosition = new Vector3(-gridPivotCalculate * GridData.GridOffsets.x, gridPivotTarget.transform.localPosition.y, -gridPivotCalculate * GridData.GridOffsets.y);
             for (int i = 0; i < gridCount; i++)
@@ -73,10 +83,10 @@ namespace GridGame.GridModule
                 _gridPositions = new Vector3(modX * GridData.GridOffsets.x + position.x, position.y,
                     modZ * GridData.GridOffsets.y + position.z);
 
-                gridPositionsData.Add(_gridPositions);
                 var obj = GetObject(PoolType.GridObject);
                 obj.transform.SetParent(this.transform);
                 obj.transform.position = _gridPositions;
+                grids[i] = new Vector2(_gridPositions.x, _gridPositions.z);
             }
         }
         private void DeleteGrid()
