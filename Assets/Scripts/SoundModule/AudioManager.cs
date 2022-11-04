@@ -1,67 +1,68 @@
-using AudioModule.Data.ScriptableObjects;
+using RunnerAudioModule.Data.ScriptableObjects;
 using UnityEngine;
-using AudioModule.Signals;
-using AudioModule.Enums;
-using System;
-using AudioModule.Data;
+using RunnerAudioModule.Signals;
+using RunnerAudioModule.Enums;
 using System.Collections.Generic;
 
-public class AudioManager : MonoBehaviour
+namespace RunnerAudioModule
 {
-    #region Self Variables
-
-    #region Serializable Variables
-    [SerializeField]
-    private List<AudioSource> Sources = new List<AudioSource>();
-    #endregion
-
-    #region Private Variables
-    private CD_Sound _cdSound;
-    #endregion
-
-    #endregion
-    private void Awake()
+    public class AudioManager : MonoBehaviour
     {
-        _cdSound = GetSoundData();
-        foreach (var item in _cdSound.SoundData)
+        #region Self Variables
+
+        #region Serializable Variables
+        [SerializeField]
+        private List<AudioSource> Sources = new List<AudioSource>();
+        #endregion
+
+        #region Private Variables
+        private CD_Sound _cdSound;
+        #endregion
+
+        #endregion
+        private void Awake()
         {
-            item.AudioSource = Sources[(int)item.SoundType];
+            _cdSound = GetSoundData();
+            foreach (var item in _cdSound.SoundData)
+            {
+                item.AudioSource = Sources[(int)item.SoundType];
 
-            item.AudioSource.clip = item.SoundClip;
-            item.AudioSource.volume = item.Volume;
-            item.AudioSource.pitch = item.Pitch;
+                item.AudioSource.clip = item.SoundClip;
+                item.AudioSource.volume = item.Volume;
+                item.AudioSource.pitch = item.Pitch;
+            }
         }
-    }
-    private CD_Sound GetSoundData()
-    {
-        return Resources.Load<CD_Sound>("Datas/CD_Sound");
-    }
+        private CD_Sound GetSoundData()
+        {
+            return Resources.Load<CD_Sound>("Datas/CD_Sound");
+        }
 
-    #region Events Subscriptions
+        #region Events Subscriptions
 
-    private void OnEnable()
-    {
-        SubscribeEvents();
-    }
+        private void OnEnable()
+        {
+            SubscribeEvents();
+        }
 
-    private void SubscribeEvents()
-    {
-        AudioSignals.Instance.onPlaySound += OnPlaySound;
-    }
-    private void UnsubscribeEvents()
-    {
-        AudioSignals.Instance.onPlaySound = OnPlaySound;
-    }
+        private void SubscribeEvents()
+        {
+            AudioSignals.Instance.onPlaySound += OnPlaySound;
+        }
+        private void UnsubscribeEvents()
+        {
+            AudioSignals.Instance.onPlaySound = OnPlaySound;
+        }
 
-    private void OnDisable()
-    {
-        UnsubscribeEvents();
-    }
-    #endregion
+        private void OnDisable()
+        {
+            UnsubscribeEvents();
+        }
+        #endregion
 
-    private void OnPlaySound(SoundType arg0, float pitchValue)
-    {
-        Sources[(int)arg0].Play();
-        Sources[(int)arg0].pitch = pitchValue;
-    }
+        private void OnPlaySound(SoundType arg0, float pitchValue)
+        {
+            Sources[(int)arg0].Play();
+            Sources[(int)arg0].pitch = pitchValue;
+        }
+    } 
 }

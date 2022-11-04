@@ -1,8 +1,9 @@
 using UnityEngine;
 using SaveLoadModule.Command;
 using SaveLoadModule.Signals;
-using LevelModule.Data;
-using ScoreModule.Data;
+using RunnerLevelModule.Data;
+using RunnerScoreModule.Data;
+using GridGame.ScoreModule.Data;
 
 namespace SaveLoadModule
 {
@@ -44,6 +45,8 @@ namespace SaveLoadModule
             SaveLoadSignals.Instance.onLoadLevelData += _loadGameCommand.Execute<LevelData>;            
             SaveLoadSignals.Instance.onSaveScoreData += _saveGameCommand.Execute;
             SaveLoadSignals.Instance.onLoadScoreData += _loadGameCommand.Execute<ScoreData>;
+            SaveLoadSignals.Instance.onSaveGridScoreData += _saveGameCommand.Execute;
+            SaveLoadSignals.Instance.onLoadGridScoreData += _loadGameCommand.Execute<GridScoreData>;
         }
 
         private void UnsubscribeEvents()
@@ -52,6 +55,8 @@ namespace SaveLoadModule
             SaveLoadSignals.Instance.onLoadLevelData -= _loadGameCommand.Execute<LevelData>;
             SaveLoadSignals.Instance.onSaveScoreData -= _saveGameCommand.Execute;
             SaveLoadSignals.Instance.onLoadScoreData -= _loadGameCommand.Execute<ScoreData>;
+            SaveLoadSignals.Instance.onSaveGridScoreData -= _saveGameCommand.Execute;
+            SaveLoadSignals.Instance.onLoadGridScoreData -= _loadGameCommand.Execute<GridScoreData>;
         }
         private void OnDisable()
         {

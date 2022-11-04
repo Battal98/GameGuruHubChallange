@@ -4,5 +4,6 @@ namespace SaveLoadModule.Enums
     {
         LevelData,
         ScoreData,
+        GridScoreData,
     } 
 }

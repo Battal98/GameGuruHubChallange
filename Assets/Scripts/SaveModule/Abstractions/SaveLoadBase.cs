@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using SaveLoadModule.Interfaces;
 using SaveLoadModule.Enums;
-using LevelModule.Data;
+using RunnerLevelModule.Data;
 
 namespace SaveLoadModule.Abstractions
 {

@@ -1,5 +1,5 @@
 
-namespace AudioModule.Enums
+namespace RunnerAudioModule.Enums
 {
     public enum SoundType
     {

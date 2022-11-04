@@ -7,8 +7,9 @@ namespace Enums
     public enum GameStates
     {
         Default,
-        Game,
+        RunnerGame,
         Failed,
         Win,
+        GridGame,
     } 
 }

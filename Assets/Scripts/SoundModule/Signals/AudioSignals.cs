@@ -1,8 +1,8 @@
 using UnityEngine.Events;
 using Extentions;
-using AudioModule.Enums;
+using RunnerAudioModule.Enums;
 
-namespace AudioModule.Signals
+namespace RunnerAudioModule.Signals
 {
     public class AudioSignals : MonoSingleton<AudioSignals>
     {

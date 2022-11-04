@@ -53,7 +53,6 @@ namespace PoolModule
         private void ResetObject(GameObject obj)
         {
             obj.transform.parent = this.transform;
-            obj.transform.rotation = new Quaternion(0, 0, 0, 0).normalized;
         }
 
         private GameObject OnGetObjectFromPool(PoolType poolType)

@@ -10,5 +10,6 @@ namespace PoolModule.Enums
         CoinObject,
         GemObject, 
         StarObject,
+        GridObject,
     } 
 }

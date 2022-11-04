@@ -1,8 +1,8 @@
-using AudioModule.Enums;
+using RunnerAudioModule.Enums;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace AudioModule.Data
+namespace RunnerAudioModule.Data
 {
     [System.Serializable]
     public class SoundData
