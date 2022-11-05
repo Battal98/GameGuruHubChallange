@@ -4,6 +4,7 @@ using SaveLoadModule.Signals;
 using GridGame.ScoreModule.Data;
 using GridGame.ScoreModule.Data.ScriptableObjects;
 using UnityEngine;
+using GridGame.UIModule.Signals;
 
 namespace GridGame.ScoreModule
 {
@@ -64,13 +65,13 @@ namespace GridGame.ScoreModule
         #endregion
         private void SetGameScore()
         {
-            //UISignals.Instance.onUpdateStarScoreText?.Invoke(_scoreData.Score);
+            UISignals.Instance.onUpdateGridScoreText?.Invoke(_gridScoreData.Score);
         }
 
         private void OnUpdateGridGameScore(int _amount)
         {
             _gridScoreData.Score += _amount;
-            //UISignals.Instance.onUpdateStarScoreText?.Invoke(_scoreData.Score);
+            UISignals.Instance.onUpdateGridScoreText?.Invoke(_gridScoreData.Score);
             SaveGameScoreData(_gridScoreData, _uniqeID);
         }
 

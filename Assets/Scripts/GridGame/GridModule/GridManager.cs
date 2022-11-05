@@ -15,13 +15,6 @@ namespace GridGame.GridModule
         private GridData GridData;
         [SerializeField]
         private Transform gridPivotTarget;
-        [SerializeField]
-        private Transform gridCrossParent;
-
-        [SerializeField]
-        private List<Vector2> neighborsList = new List<Vector2>();
-        [SerializeField]
-        private List<GameObject> neighborsObjectList = new List<GameObject>();
 
         [ReadOnly]
         [ShowInInspector]
@@ -42,14 +35,12 @@ namespace GridGame.GridModule
 
         private void Awake()
         {
-            _gridClickCommand = new GridClickCommand();
+            _gridClickCommand = new GridClickCommand(GetGridMatchParticle(), GetGridClickParticle());
+            _camera = Camera.main;
         }
 
-        private void Start()
-        {
-            _camera = Camera.main;
-            OnCreateGrid(GridData.GridSize);
-        }
+        private ParticleSystem GetGridMatchParticle() => GetObject(PoolType.GridMatchParticle).GetComponent<ParticleSystem>();
+        private ParticleSystem GetGridClickParticle() => GetObject(PoolType.GridClickParticle).GetComponent<ParticleSystem>();
 
         #region Event Subscriptions
 
@@ -75,16 +66,13 @@ namespace GridGame.GridModule
 
         private void OnClick()
         {
-            _gridClickCommand.Click(neighborsList);
+            _gridClickCommand.Click();
         }
 
         private void OnCreateGrid(int gridInputSize)
         {
             if (this.transform.childCount > 0)
                 ReleaseAllGridObject(this.transform,PoolType.GridObject);
-
-            neighborsList.Clear();
-            neighborsList.TrimExcess();
 
             _gridArray = new GridSquareBackground[gridInputSize, gridInputSize];
             GridData.GridSize = gridInputSize;

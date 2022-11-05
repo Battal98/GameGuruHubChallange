@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CD_Pool
   m_EditorClassIdentifier: 
   PoolDataDic:
-    m_Keys: 00000000010000000200000003000000040000000500000006000000070000000800000009000000
+    m_Keys: 000000000100000002000000030000000400000005000000060000000700000008000000090000000b0000000a000000
     m_Values:
     - ObjectType: {fileID: 2654792769663275691, guid: d3e3d57457d48984a90b29aa179cc167,
         type: 3}
@@ -53,3 +53,10 @@ MonoBehaviour:
         type: 3}
       initalAmount: 50
       isDynamic: 1
+    - ObjectType: {fileID: 128324, guid: 5be4904e27e7c0f40b39ee9f1f4090d0, type: 3}
+      initalAmount: 1
+      isDynamic: 0
+    - ObjectType: {fileID: 969886199417429755, guid: 4c29a27f064107648b795123685d9b75,
+        type: 3}
+      initalAmount: 1
+      isDynamic: 0
