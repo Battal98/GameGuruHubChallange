@@ -71,6 +71,8 @@ namespace GridGame.GridModule
 
         private void OnCreateGrid(int gridInputSize)
         {
+            if (gridInputSize <= 0)
+                return;
             if (this.transform.childCount > 0)
                 ReleaseAllGridObject(this.transform,PoolType.GridObject);
 
@@ -98,8 +100,8 @@ namespace GridGame.GridModule
                 var obj = GetObject(PoolType.GridObject);
                 obj.transform.SetParent(this.transform);
                 obj.transform.position = _gridPositions;
+
                 var objComponent = obj.GetComponent<GridSquareBackground>();
-                objComponent.Index = i;
                 _gridArray[modX, modZ] = objComponent;
 
             }

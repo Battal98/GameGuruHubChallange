@@ -51,11 +51,9 @@ public class GridClickCommand: IGetPoolObject, IReleasePoolObject
                     else
                     {
                         _clickParticle.transform.position = obj.transform.position;
-                        _clickParticle.transform.localScale = Vector3.one /2;
                         _clickParticle.Play();
                     }
                 }
-
             }
         }
     }
@@ -65,11 +63,8 @@ public class GridClickCommand: IGetPoolObject, IReleasePoolObject
         if (_neighbors.Contains(gridSquareManager)) return;
         _neighbors.Add(gridSquareManager);
         for (int i = 0; i < gridSquareManager.MyNeighbors.Count; i++)
-        {
-            var currentGrid = gridSquareManager.GetNeighborSpesificIndex(i);
             if (gridSquareManager.MyNeighbors[i].AvaibleType == AvaibleType.Lock)
-                CheckNeighbors(currentGrid);
-        }
+                CheckNeighbors(gridSquareManager.MyNeighbors[i]);
     }
 
     public GameObject GetObject(PoolType poolType)
