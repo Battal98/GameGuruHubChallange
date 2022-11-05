@@ -50,14 +50,18 @@ namespace RunnerCutModule.Controllers
                     AudioSignals.Instance.onPlaySound(SoundType.Incorrect, pitchValue);
                 }
                 comboValue = 0;
-                _stackCubes[_stackCubes.Count - 1].transform.localScale = new Vector3(stackCubeXSize,
-                _stackCubes[_stackCubes.Count - 1].transform.localScale.y,
-                _stackCubes[_stackCubes.Count - 1].transform.localScale.z);
+                if (stackCubeXSize>0)
+                {
+                    _stackCubes[_stackCubes.Count - 1].transform.localScale = new Vector3(stackCubeXSize,
+                        _stackCubes[_stackCubes.Count - 1].transform.localScale.y,
+                        _stackCubes[_stackCubes.Count - 1].transform.localScale.z);
 
-                _stackCubes[_stackCubes.Count - 1].transform.position = new Vector3(stackCubeXPosition,
-                    _stackCubes[_stackCubes.Count - 1].transform.position.y,
-                    _stackCubes[_stackCubes.Count - 1].transform.position.z);
-                SpawnCuttedCube(cuttedCubeXPosition, cuttedCubeSize, _stackCubes);
+                    _stackCubes[_stackCubes.Count - 1].transform.position = new Vector3(stackCubeXPosition,
+                        _stackCubes[_stackCubes.Count - 1].transform.position.y,
+                        _stackCubes[_stackCubes.Count - 1].transform.position.z);
+                    SpawnCuttedCube(cuttedCubeXPosition, cuttedCubeSize, _stackCubes);
+                }
+
             }
         }
         private void SpawnCuttedCube(float cuttedCubeXPosition, float cuttedCubeSize, List<GameObject> _stackCubes)
