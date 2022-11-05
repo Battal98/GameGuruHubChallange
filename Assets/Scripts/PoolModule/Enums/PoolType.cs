@@ -11,5 +11,6 @@ namespace PoolModule.Enums
         GemObject, 
         StarObject,
         GridObject,
+        GridCrossObject,
     } 
 }
