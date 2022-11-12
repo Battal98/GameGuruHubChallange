@@ -96,17 +96,16 @@ namespace RunnerCutModule
         {
             if (_isFailed)
                 return;
-
+            if (_stackCubes.Count > 1)
+            {
+                _stackCubes[_stackCubes.Count - 1].transform.localScale = _stackCubes[_stackCubes.Count - 2].transform.localScale;
+                stackCubeCutController.CutObject(_stackCubes);
+            }
             if (Count >= _maxCubeCount)
             {
                 if (finishObject.activeInHierarchy)
                     calculateFinishCommand.GetFinishObject(_stackCubes);
                 return;
-            }
-            if (_stackCubes.Count > 1)
-            {
-                _stackCubes[_stackCubes.Count - 1].transform.localScale = _stackCubes[_stackCubes.Count - 2].transform.localScale;
-                stackCubeCutController.CutObject(_stackCubes);
             }
             stackCubeOnClickController.Click(_stackCubes, _stackCubeOffsetZ, _maxCubeCount,_stackCubeData);
         }

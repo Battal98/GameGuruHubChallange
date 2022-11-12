@@ -6,6 +6,7 @@ using PoolModule.Interfaces;
 using PoolModule.Enums;
 using RunnerAudioModule.Signals;
 using RunnerAudioModule.Enums;
+using DG.Tweening;
 
 namespace RunnerCutModule.Controllers
 {
@@ -30,10 +31,10 @@ namespace RunnerCutModule.Controllers
             float cuttedCubeEdge = _stackCubes[_stackCubes.Count - 1].transform.position.x + (stackCubeXSize / 2 * direction);
             float cuttedCubeXPosition = cuttedCubeEdge + cuttedCubeSize / 2f * direction;
 
-            CheckStackCube(edge, stackCubeXSize, stackCubeXPosition, cuttedCubeXPosition, cuttedCubeSize , _stackCubes);
+            CheckStackCube(edge, stackCubeXSize, stackCubeXPosition, cuttedCubeXPosition, cuttedCubeSize , _stackCubes, direction);
         }
 
-        private void CheckStackCube(float edge, float stackCubeXSize, float stackCubeXPosition, float cuttedCubeXPosition, float cuttedCubeSize, List<GameObject> _stackCubes)
+        private void CheckStackCube(float edge, float stackCubeXSize, float stackCubeXPosition, float cuttedCubeXPosition, float cuttedCubeSize, List<GameObject> _stackCubes, float direction)
         {
             if (Mathf.Abs(edge) <= 0.1f)
             {
@@ -45,7 +46,7 @@ namespace RunnerCutModule.Controllers
             else
             {
                 pitchValue = 1f;
-                if (comboValue > 2)
+                if (comboValue > 3)
                 {
                     AudioSignals.Instance.onPlaySound(SoundType.Incorrect, pitchValue);
                 }
@@ -59,12 +60,12 @@ namespace RunnerCutModule.Controllers
                     _stackCubes[_stackCubes.Count - 1].transform.position = new Vector3(stackCubeXPosition,
                         _stackCubes[_stackCubes.Count - 1].transform.position.y,
                         _stackCubes[_stackCubes.Count - 1].transform.position.z);
-                    SpawnCuttedCube(cuttedCubeXPosition, cuttedCubeSize, _stackCubes);
+                    SpawnCuttedCube(cuttedCubeXPosition, cuttedCubeSize, _stackCubes, direction);
                 }
 
             }
         }
-        private void SpawnCuttedCube(float cuttedCubeXPosition, float cuttedCubeSize, List<GameObject> _stackCubes)
+        private void SpawnCuttedCube(float cuttedCubeXPosition, float cuttedCubeSize, List<GameObject> _stackCubes, float direction)
         {
             var cuttedObj = GetObject(PoolType.CuttedCubes);
 
@@ -76,7 +77,8 @@ namespace RunnerCutModule.Controllers
                 _stackCubes[_stackCubes.Count - 1].transform.position.z);
 
             cuttedObj.GetComponentInChildren<MeshRenderer>().material.color = _stackCubes[_stackCubes.Count - 1].GetComponentInChildren<MeshRenderer>().material.color;
-
+            var dir = new Vector3(0, 0, direction * 360);
+            cuttedObj.transform.DORotate(dir, 1f, RotateMode.LocalAxisAdd);
         }
 
         public GameObject GetObject(PoolType poolType)

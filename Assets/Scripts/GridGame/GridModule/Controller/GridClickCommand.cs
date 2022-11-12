@@ -35,7 +35,7 @@ public class GridClickCommand: IGetPoolObject, IReleasePoolObject
                     _neighbors.Clear();
                     CheckNeighbors(gridSquareManager);
 
-                    if (_neighbors.Count >= 3)
+                    if (_neighbors.Count >= 4)
                     {
                         CoreGameSignals.Instance.onUpdateGridGameScore?.Invoke(_scoreRaiseAmount);
                         _matchParticle.transform.position = obj.transform.position;
